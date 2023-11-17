@@ -9,6 +9,10 @@ class Wizytowka:
         self.email = email
         self.telefon = telefon
 
+    @property
+    def dlugosc_imienia_nazwiska(self):
+        return len(self.imie) + len(self.nazwisko)
+    
     def contact(self):
         print(f"Kontaktuję się z {self.imie} {self.nazwisko}, {self.stanowisko}, e-mail: {self.email}")
 
@@ -27,3 +31,4 @@ def generuj_wizytowke():
 
 moja_wizytowka = generuj_wizytowke()
 moja_wizytowka.contact()
+print(f"Długość imienia i nazwiska: {moja_wizytowka.dlugosc_imienia_nazwiska}")
