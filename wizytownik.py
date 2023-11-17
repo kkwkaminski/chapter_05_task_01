@@ -9,6 +9,9 @@ class Wizytowka:
         self.email = email
         self.telefon = telefon
 
+    def contact(self):
+        print(f"Kontaktuję się z {self.imie} {self.nazwisko}, {self.stanowisko}, e-mail: {self.email}")
+
 def generuj_wizytowke():
     fake = Faker()
     imie = fake.first_name()
@@ -21,11 +24,6 @@ def generuj_wizytowke():
     wizytowka = Wizytowka(imie, nazwisko, firma, stanowisko, email, telefon)
     return wizytowka
 
-# Przykład użycia
+
 moja_wizytowka = generuj_wizytowke()
-print(f"Imię: {moja_wizytowka.imie}")
-print(f"Nazwisko: {moja_wizytowka.nazwisko}")
-print(f"Firma: {moja_wizytowka.firma}")
-print(f"Stanowisko: {moja_wizytowka.stanowisko}")
-print(f"Email: {moja_wizytowka.email}")
-print(f"Telefon: {moja_wizytowka.telefon}")
+moja_wizytowka.contact()
