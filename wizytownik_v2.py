@@ -1,47 +1,59 @@
 from faker import Faker
 
-class Wizytowka:
-    def __init__(self, imie, nazwisko, firma, stanowisko, email):
+class BaseContact:
+    def __init__(self, imie, nazwisko, telefon, email):
         self.imie = imie
         self.nazwisko = nazwisko
-        self.firma = firma
-        self.stanowisko = stanowisko
+        self.telefon = telefon
         self.email = email
 
     def contact(self):
-        print(f"Kontaktuję się z {self.imie} {self.nazwisko}, {self.stanowisko}, e-mail: {self.email}")
+        print(f"Wybieram numer {self.telefon} i dzwonię do {self.imie} {self.nazwisko}")
 
     @property
-    def dlugosc_imienia_nazwiska(self):
-        return len(self.imie) + len(self.nazwisko)
+    def label_length(self):
+        return len(f"{self.imie} {self.nazwisko}")
 
-def generuj_wizytowki(ilosc=5):
+class BusinessContact(BaseContact):
+    def __init__(self, imie, nazwisko, telefon, email, stanowisko, firma, telefon_sluzbowy):
+        super().__init__(imie, nazwisko, telefon, email)
+        self.stanowisko = stanowisko
+        self.firma = firma
+        self.telefon_sluzbowy = telefon_sluzbowy
+
+    def contact(self):
+        print(f"Wybieram numer {self.telefon_sluzbowy} i dzwonię do {self.imie} {self.nazwisko} w firmie {self.firma}")
+
+def create_contacts(rodzaj, ilosc=5):
     fake = Faker()
-    wizytowki = []
+    contacts = []
 
     for _ in range(ilosc):
         imie = fake.first_name()
         nazwisko = fake.last_name()
-        firma = fake.company()
-        stanowisko = fake.job()
+        telefon = fake.phone_number()
         email = fake.email()
 
-        wizytowka = Wizytowka(imie, nazwisko, firma, stanowisko, email)
-        wizytowki.append(wizytowka)
+        if rodzaj == 'base':
+            contact = BaseContact(imie, nazwisko, telefon, email)
+        elif rodzaj == 'business':
+            stanowisko = fake.job()
+            firma = fake.company()
+            telefon_sluzbowy = fake.phone_number()
+            contact = BusinessContact(imie, nazwisko, telefon, email, stanowisko, firma, telefon_sluzbowy)
 
-    return wizytowki
+        contacts.append(contact)
 
-def wyswietl_wizytowki(wizytowki):
-    for wizytowka in wizytowki:
-        print(f"{wizytowka.imie} {wizytowka.nazwisko} - {wizytowka.email}")
+    return contacts
 
+# Wywołanie
+base_contacts = create_contacts('base')
+business_contacts = create_contacts('business')
 
-lista_wizytowek = generuj_wizytowki()
+for contact in base_contacts:
+    contact.contact()
+    print(f"Długość imienia i nazwiska: {contact.label_length}")
 
-
-wyswietl_wizytowki(lista_wizytowek)
-
-
-for wizytowka in lista_wizytowek:
-    wizytowka.contact()
-    print(f"Długość imienia i nazwiska: {wizytowka.dlugosc_imienia_nazwiska}\n")
+for contact in business_contacts:
+    contact.contact()
+    print(f"Długość imienia i nazwiska: {contact.label_length}")
