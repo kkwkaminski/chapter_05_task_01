@@ -6,23 +6,32 @@ class BaseContact:
         self.nazwisko = nazwisko
         self.telefon = telefon
         self.email = email
+        self._label_length = None
 
     def contact(self):
         print(f"Wybieram numer {self.telefon} i dzwonię do {self.imie} {self.nazwisko}")
 
     @property
     def label_length(self):
-        return len(f"{self.imie} {self.nazwisko}")
+        if self._label_length is None:
+            self._label_length = len(f"{self.imie} {self.nazwisko}")
+        return self._label_length
 
 class BusinessContact(BaseContact):
-    def __init__(self, imie, nazwisko, telefon, email, stanowisko, firma, telefon_sluzbowy):
-        super().__init__(imie, nazwisko, telefon, email)
+    def __init__(self, stanowisko, firma, telefon_sluzbowy, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.stanowisko = stanowisko
         self.firma = firma
         self.telefon_sluzbowy = telefon_sluzbowy
 
     def contact(self):
         print(f"Wybieram numer {self.telefon_sluzbowy} i dzwonię do {self.imie} {self.nazwisko} w firmie {self.firma}")
+
+    @property
+    def label_length(self):
+        if self._label_length is None:
+            self._label_length = len(f"{self.imie} {self.nazwisko}")
+        return self._label_length
 
 def create_contacts(rodzaj, ilosc=5):
     fake = Faker()
@@ -40,20 +49,20 @@ def create_contacts(rodzaj, ilosc=5):
             stanowisko = fake.job()
             firma = fake.company()
             telefon_sluzbowy = fake.phone_number()
-            contact = BusinessContact(imie, nazwisko, telefon, email, stanowisko, firma, telefon_sluzbowy)
+            contact = BusinessContact(stanowisko=stanowisko, firma=firma, telefon_sluzbowy=telefon_sluzbowy, imie=imie, nazwisko=nazwisko, telefon=telefon, email=email)
 
         contacts.append(contact)
 
     return contacts
 
-# Wywołanie
-base_contacts = create_contacts('base')
-business_contacts = create_contacts('business')
+if __name__ == "__main__":
+    base_contacts = create_contacts('base')
+    business_contacts = create_contacts('business')
 
-for contact in base_contacts:
-    contact.contact()
-    print(f"Długość imienia i nazwiska: {contact.label_length}")
+    for contact in base_contacts:
+        contact.contact()
+        print(f"Długość imienia i nazwiska: {contact.label_length}")
 
-for contact in business_contacts:
-    contact.contact()
-    print(f"Długość imienia i nazwiska: {contact.label_length}")
+    for contact in business_contacts:
+        contact.contact()
+        print(f"Długość imienia i nazwiska: {contact.label_length}")
